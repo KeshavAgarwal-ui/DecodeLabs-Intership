@@ -6,18 +6,11 @@
 <title>Kindling Coffee Co. — Small-Batch Roastery</title>
 <meta name="description" content="A responsive, accessible landing page for Kindling Coffee Co., a small-batch coffee roastery.">
 
-<!-- Fonts: Montserrat (headlines) + Roboto (body) — max 2 families, 3 weights, per spec -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-  /* =====================================================
-     DESIGN TOKENS
-     Palette: Mocha Mousse (stability), Ethereal Blue (trust),
-     Moonlit Grey (refinement) + two supporting neutrals so text
-     and cards have proper contrast against the warm base.
-     ===================================================== */
   :root{
     --mocha: #A5958F;
     --mocha-dark: #7C6C65;
@@ -33,7 +26,6 @@
     --radius: 14px;
     --shadow: 0 10px 30px -14px rgba(54,42,36,0.35);
 
-    /* Fluid type scale via clamp() */
     --fs-hero: clamp(2.1rem, 5.2vw + 1rem, 4rem);
     --fs-h2:   clamp(1.5rem, 2.6vw + 0.7rem, 2.4rem);
     --fs-h3:   clamp(1.1rem, 1.2vw + 0.8rem, 1.4rem);
@@ -62,7 +54,6 @@
   ul{ margin:0; padding:0; list-style:none; }
   button{ font-family: inherit; cursor:pointer; }
 
-  /* Visible focus state everywhere — accessibility floor */
   :focus-visible{
     outline: 3px solid var(--sky-dark);
     outline-offset: 3px;
@@ -306,14 +297,9 @@
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem;
   }
 
-  /* reveal-on-scroll (respects reduced motion via the block above) */
   .reveal{ opacity:0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
   .reveal.in{ opacity:1; transform:none; }
 
-  /* =====================================================
-     BREAKPOINTS — mobile-first, min-width media queries
-     Tablet: 768px | Desktop: 1024px  (per PDF Mobile-First Strategy)
-     ===================================================== */
   @media (min-width: 768px){
     .nav-toggle{ display:none; }
     nav.primary-nav{
@@ -400,7 +386,6 @@
         <div class="roast-visual">
           <img id="roastImage" src="" alt="Close-up of coffee beans at the selected roast level" loading="lazy">
           <div class="roast-chart" id="roastVisual" aria-hidden="true">
-            <!-- beans injected by JS -->
           </div>
         </div>
 
@@ -537,7 +522,7 @@
 (function(){
   "use strict";
 
-  /* ---------- Mobile nav toggle (state management) ---------- */
+  /* ---------- Mobile nav toggle---------- */
   var toggle = document.getElementById('navToggle');
   var nav = document.getElementById('primaryNav');
   var scrim = document.getElementById('navScrim');
@@ -561,7 +546,7 @@
     if(e.key === 'Escape') closeNav();
   });
 
-  /* ---------- Roast level interactivity (signature element) ---------- */
+  /* ---------- Roast level interactivity---------- */
   var roastData = {
     light: {
       color: '#A0D4E0',
@@ -624,7 +609,7 @@
 
   setRoast('medium'); // initial state
 
-  /* ---------- Newsletter form validation (interactivity) ---------- */
+  /* ---------- Newsletter form validation---------- */
   var form = document.getElementById('signupForm');
   var emailInput = document.getElementById('email');
   var msg = document.getElementById('formMsg');
@@ -647,7 +632,7 @@
     form.reset();
   });
 
-  /* ---------- Scroll reveal (respects prefers-reduced-motion via CSS) ---------- */
+  /* ---------- Scroll reveal ---------- */
   if('IntersectionObserver' in window){
     var observer = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
