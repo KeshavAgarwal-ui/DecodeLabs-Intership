@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kindling Coffee Co. — Small-Batch Roastery</title>
+<meta name="description" content="A responsive, accessible landing page for Kindling Coffee Co., a small-batch coffee roastery.">
+
+<!-- Fonts: Montserrat (headlines) + Roboto (body) — max 2 families, 3 weights, per spec -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* =====================================================
+     DESIGN TOKENS
+     Palette: Mocha Mousse (stability), Ethereal Blue (trust),
+     Moonlit Grey (refinement) + two supporting neutrals so text
+     and cards have proper contrast against the warm base.
+     ===================================================== */
+  :root{
+    --mocha: #A5958F;
+    --mocha-dark: #7C6C65;
+    --sky: #A0D4E0;
+    --sky-dark: #5D96A4;
+    --grey: #F2F0EA;
+    --cream: #FBF9F5;
+    --ink: #362A24;
+
+    --font-head: 'Montserrat', sans-serif;
+    --font-body: 'Roboto', sans-serif;
+
+    --radius: 14px;
+    --shadow: 0 10px 30px -14px rgba(54,42,36,0.35);
+
+    /* Fluid type scale via clamp() */
+    --fs-hero: clamp(2.1rem, 5.2vw + 1rem, 4rem);
+    --fs-h2:   clamp(1.5rem, 2.6vw + 0.7rem, 2.4rem);
+    --fs-h3:   clamp(1.1rem, 1.2vw + 0.8rem, 1.4rem);
+    --fs-body: clamp(1rem, 0.3vw + 0.9rem, 1.125rem);
+
+    --gap: clamp(1rem, 2.5vw, 2.5rem);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.6;
+  }
+  img{ max-width:100%; display:block; }
+  h1,h2,h3{ font-family: var(--font-head); line-height:1.15; margin:0 0 .5em; }
+  a{ color: inherit; }
+  ul{ margin:0; padding:0; list-style:none; }
+  button{ font-family: inherit; cursor:pointer; }
+
+  /* Visible focus state everywhere — accessibility floor */
+  :focus-visible{
+    outline: 3px solid var(--sky-dark);
+    outline-offset: 3px;
+  }
+
+  .skip-link{
+    position:absolute; left:-999px; top:auto;
+    background: var(--ink); color:#fff; padding: .75rem 1.25rem;
+    border-radius: 0 0 8px 0; z-index: 100;
+  }
+  .skip-link:focus{ left:0; top:0; }
+
+  .wrap{
+    width:min(1180px, 100% - 2.5rem);
+    margin-inline:auto;
+  }
+
+  /* =============== HEADER / NAV =============== */
+  header.site-header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(251,249,245,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(54,42,36,0.08);
+  }
+  .nav-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 1rem 0;
+  }
+  .brand{
+    display:flex; align-items:center; gap:.6rem;
+    font-family: var(--font-head); font-weight:800; font-size:1.15rem;
+    text-decoration:none; color: var(--ink);
+  }
+  .brand-mark{
+    width:36px; height:36px; border-radius:50%;
+    background: conic-gradient(from 220deg, var(--mocha-dark), var(--mocha), var(--sky));
+    flex-shrink:0;
+  }
+  .nav-toggle{
+    display:flex; flex-direction:column; gap:5px;
+    background:none; border:2px solid var(--ink); border-radius:8px;
+    padding:.5rem .6rem;
+  }
+  .nav-toggle span{ width:20px; height:2px; background:var(--ink); display:block; }
+
+  nav.primary-nav {
+  position: fixed; 
+  inset: 0 0 auto 30%;     
+  background: var(--ink);
+  padding: 6rem 2rem 2rem;
+  transform: translateX(100%);
+  transition: transform .35s ease;
+}
+  nav.primary-nav.open{ transform: translateX(0); }
+  nav.primary-nav ul{ display:flex; flex-direction:column; gap:1.5rem; }
+  nav.primary-nav a{
+    color: var(--grey); text-decoration:none; font-family: var(--font-head);
+    font-weight:600; font-size:1.25rem;
+  }
+  nav.primary-nav a:hover, nav.primary-nav a:focus-visible{ color: var(--sky); }
+
+  .nav-scrim{
+    position:fixed; inset:0; background:rgba(0,0,0,.4);
+    opacity:0; pointer-events:none; transition:opacity .3s ease;
+    z-index:40;
+  }
+  .nav-scrim.show{ opacity:1; pointer-events:auto; }
+
+  /* =============== HERO =============== */
+  .hero{
+    display:grid; gap:2.5rem;
+    padding: clamp(2.5rem,6vw,5rem) 0;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    font-size:.78rem; color: var(--mocha-dark);
+    background: var(--grey); padding:.4rem .9rem; border-radius:999px;
+    margin-bottom:1rem;
+  }
+  .hero h1{ font-size: var(--fs-hero); font-weight:800; }
+  .hero h1 em{
+    font-style:normal; color: var(--sky-dark);
+    text-decoration: underline; text-decoration-color: var(--mocha);
+    text-decoration-thickness: .1em; text-underline-offset:.08em;
+  }
+  .hero p.lede{ font-size: 1.1rem; max-width: 46ch; color: var(--mocha-dark); }
+  .hero-actions{ display:flex; flex-wrap:wrap; gap:1rem; margin-top:1.5rem; }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:.85rem 1.6rem; border-radius:999px; font-weight:700;
+    text-decoration:none; border:2px solid transparent; transition: transform .15s ease, background .2s ease;
+  }
+  .btn-primary{ background: var(--ink); color: var(--cream); }
+  .btn-primary:hover{ transform: translateY(-2px); background: var(--mocha-dark); }
+  .btn-ghost{ border-color: var(--ink); color: var(--ink); background:transparent; }
+  .btn-ghost:hover{ background: var(--ink); color: var(--cream); }
+
+  .hero-visual{
+    aspect-ratio: 4/3; border-radius: var(--radius);
+    background: var(--mocha);
+    box-shadow: var(--shadow);
+    position:relative; overflow:hidden;
+  }
+  .hero-visual img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .hero-visual::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(155deg, rgba(160,212,224,.25) 0%, transparent 45%, rgba(54,42,36,.25) 100%);
+  }
+
+  /* =============== SECTION SCAFFOLD =============== */
+  section{ padding: clamp(3rem, 6vw, 5.5rem) 0; }
+  .section-head{ max-width: 60ch; margin-bottom: 2.5rem; }
+  .section-head .kicker{
+    display:block; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    font-size:.78rem; color: var(--sky-dark); margin-bottom:.6rem;
+  }
+  .section-head h2{ font-size: var(--fs-h2); font-weight:800; }
+  .section-alt{ background: var(--grey); }
+
+  /* =============== ROAST CRAFT (signature interactive element) =============== */
+  .roast-panel{
+    display:grid; gap: var(--gap);
+    background: var(--ink); color: var(--cream);
+    border-radius: var(--radius); padding: clamp(1.5rem,4vw,3rem);
+  }
+  .roast-visual{
+    position:relative;
+    border-radius: 10px;
+    overflow:hidden;
+    aspect-ratio: 4/3;
+    background: #1f1713;
+  }
+  .roast-visual img{
+    width:100%; height:100%; object-fit:cover;
+    transition: opacity .35s ease;
+  }
+  .roast-chart{
+    position:absolute; left:0; right:0; bottom:0;
+    display:flex; align-items:flex-end; justify-content:center; gap:.5rem;
+    height: 70px;
+    padding: 10px 12px 12px;
+    background: linear-gradient(to top, rgba(0,0,0,.55), transparent);
+  }
+  .roast-bean{
+    width: 20px; border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+    transition: background .4s ease, height .4s ease;
+    background: var(--roast-color, var(--sky));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.15) inset;
+  }
+  .roast-controls{ display:flex; flex-direction:column; gap:1rem; }
+  .roast-slider{
+    display:flex; gap:.5rem; flex-wrap:wrap;
+  }
+  .roast-btn{
+    flex:1 1 auto; min-width:110px;
+    padding:.7rem 1rem; border-radius:10px; border:2px solid rgba(251,249,245,.25);
+    background:transparent; color: var(--cream); font-weight:700;
+  }
+  .roast-btn[aria-pressed="true"]{
+    background: var(--sky); color: var(--ink); border-color: var(--sky);
+  }
+  .roast-desc{ min-height: 5.5em; }
+  .roast-desc strong{ color: var(--sky); display:block; margin-bottom:.25rem; font-family: var(--font-head); }
+
+  /* =============== PRODUCT GRID =============== */
+  .grid-products{
+    display:grid; gap: var(--gap);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .card{
+    background: var(--cream); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .card-media{
+    aspect-ratio: 16/11;
+    background: var(--mocha);
+    overflow:hidden;
+  }
+  .card-media img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition: transform .5s ease;
+  }
+  .card:hover .card-media img{ transform: scale(1.05); }
+  .card-body{ padding: 1.4rem; display:flex; flex-direction:column; gap:.6rem; flex:1; }
+  .card-body h3{ font-size: var(--fs-h3); }
+  .card-price{ font-weight:700; color: var(--mocha-dark); margin-top:auto; }
+
+  /* =============== STORY / SPLIT =============== */
+  .split{
+    display:grid; gap: var(--gap);
+    align-items:center;
+  }
+  .stat-row{ display:flex; gap: var(--gap); flex-wrap:wrap; margin-top:1.5rem; }
+  .stat b{ display:block; font-family: var(--font-head); font-size:1.8rem; color: var(--sky-dark); }
+  .stat span{ font-size:.85rem; color: var(--mocha-dark); }
+
+  /* =============== NEWSLETTER FORM =============== */
+  .newsletter{
+    background: var(--sky); border-radius: var(--radius);
+    padding: clamp(1.5rem,4vw,3rem);
+    display:grid; gap:1.5rem;
+  }
+  .newsletter h2{ font-size: var(--fs-h2); }
+  form.signup{ display:flex; gap: .8rem; flex-wrap:wrap; }
+  .field{ flex:1 1 240px; display:flex; flex-direction:column; gap:.4rem; }
+  label{ font-weight:700; font-size:.85rem; }
+  input[type="email"]{
+    padding:.85rem 1rem; border-radius:10px; border:2px solid var(--ink);
+    font: inherit; background: var(--cream);
+  }
+  .form-msg{
+    font-weight:700; padding:.6rem 1rem; border-radius:8px;
+    display:none;
+  }
+  .form-msg.show{ display:block; }
+  .form-msg.ok{ background: var(--ink); color: var(--sky); }
+  .form-msg.err{ background: #fff; color:#8a2c2c; border:2px solid #8a2c2c; }
+
+  /* =============== FOOTER =============== */
+  footer.site-footer{
+    background: var(--ink); color: var(--grey);
+    padding: 3rem 0 2rem;
+  }
+  .footer-grid{
+    display:grid; gap: var(--gap);
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  }
+  footer h3{ color: var(--sky); font-size:1rem; }
+  footer a{ text-decoration:none; color: var(--grey); opacity:.85; }
+  footer a:hover{ opacity:1; text-decoration:underline; }
+  footer li + li{ margin-top:.5rem; }
+  .footer-bottom{
+    margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid rgba(251,249,245,.15);
+    font-size:.85rem; opacity:.8;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem;
+  }
+
+  /* reveal-on-scroll (respects reduced motion via the block above) */
+  .reveal{ opacity:0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* =====================================================
+     BREAKPOINTS — mobile-first, min-width media queries
+     Tablet: 768px | Desktop: 1024px  (per PDF Mobile-First Strategy)
+     ===================================================== */
+  @media (min-width: 768px){
+    .nav-toggle{ display:none; }
+    nav.primary-nav{
+      position:static; inset:auto; background:none; padding:0;
+      transform:none; transition:none;
+    }
+    nav.primary-nav ul{ flex-direction:row; gap:2rem; }
+    nav.primary-nav a{ color: var(--ink); font-size:1rem; }
+    nav.primary-nav a:hover, nav.primary-nav a:focus-visible{ color: var(--sky-dark); }
+    .nav-scrim{ display:none; }
+
+    .hero{ grid-template-columns: 1.1fr 1fr; align-items:center; }
+    .split{ grid-template-columns: 1fr 1fr; }
+    .split.reverse > *:first-child{ order:2; }
+
+    .roast-panel{ grid-template-columns: 1fr 1fr; align-items:center; }
+    form.signup{ flex-wrap:nowrap; }
+  }
+
+  @media (min-width: 1024px){
+    .wrap{ width:min(1180px, 100% - 5rem); }
+    .grid-products{ grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="site-header">
+  <div class="wrap nav-row">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      Kindling Coffee Co.
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
+      <span></span><span></span><span></span>
+      <span class="sr-only" style="position:absolute;left:-9999px;">Toggle menu</span>
+    </button>
+
+    <nav class="primary-nav" id="primaryNav" aria-label="Primary">
+      <ul>
+        <li><a href="#craft">Our Craft</a></li>
+        <li><a href="#shop">Shop</a></li>
+        <li><a href="#story">Story</a></li>
+        <li><a href="#join">Join</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<div class="nav-scrim" id="navScrim"></div>
+
+<main id="main">
+
+  <!-- HERO -->
+  <div class="wrap">
+    <section class="hero" id="top">
+      <div>
+        <span class="hero-eyebrow">Small-batch · Roasted weekly</span>
+        <h1>Coffee, roasted with <em>intention</em>, not shortcuts.</h1>
+        <p class="lede">Kindling Coffee Co. roasts in 12kg batches out of Lucknow, tracking every bean from farm to cup so your morning ritual actually tastes like where it came from.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#shop">Shop the roast</a>
+          <a class="btn btn-ghost" href="#craft">See our process</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="https://images.unsplash.com/photo-1725976404931-84e8421d9710?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="A cup of freshly brewed coffee with steam rising, sitting on a wooden table" loading="eager">
+      </div>
+    </section>
+  </div>
+
+  <!-- ROAST CRAFT — signature interactive element -->
+  <div class="wrap">
+    <section id="craft" class="reveal">
+      <div class="section-head">
+        <span class="kicker">Our Craft</span>
+        <h2>Every roast level tells a different story.</h2>
+      </div>
+
+      <div class="roast-panel">
+        <div class="roast-visual">
+          <img id="roastImage" src="" alt="Close-up of coffee beans at the selected roast level" loading="lazy">
+          <div class="roast-chart" id="roastVisual" aria-hidden="true">
+            <!-- beans injected by JS -->
+          </div>
+        </div>
+
+        <div class="roast-controls">
+          <div class="roast-slider" role="group" aria-label="Choose a roast level">
+            <button class="roast-btn" data-roast="light" aria-pressed="false">Light</button>
+            <button class="roast-btn" data-roast="medium" aria-pressed="true">Medium</button>
+            <button class="roast-btn" data-roast="dark" aria-pressed="false">Dark</button>
+          </div>
+          <div class="roast-desc" id="roastDesc" aria-live="polite">
+            <strong>Medium Roast</strong>
+            Balanced and rounded — caramelized sugars meet bright acidity. Notes of toasted hazelnut and stone fruit.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SHOP -->
+  <div class="wrap">
+    <section id="shop" class="reveal">
+      <div class="section-head">
+        <span class="kicker">Shop</span>
+        <h2>This week's lineup</h2>
+      </div>
+      <div class="grid-products">
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1589830802010-c2c25d784842?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="Light, evenly roasted coffee beans for the Highland Sunrise blend" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3>Highland Sunrise</h3>
+            <p>Ethiopian single-origin, washed process. Floral, jasmine, lemon zest.</p>
+            <span class="card-price">₹620 / 250g</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1748295600393-5314e7009c9b?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="A shot of espresso resting on a bed of roasted coffee beans for the Foundry Blend" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3>Foundry Blend</h3>
+            <p>Our house espresso blend. Dark chocolate, roasted almond, low acidity.</p>
+            <span class="card-price">₹560 / 250g</span>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-media">
+            <img src="https://images.unsplash.com/photo-1690983323458-ec4a54fc9552?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="A scoop of roasted decaf coffee beans for Quiet Hour Decaf" loading="lazy">
+          </div>
+          <div class="card-body">
+            <h3>Quiet Hour Decaf</h3>
+            <p>Swiss-water decaf from Colombia. Brown sugar, walnut, gentle finish.</p>
+            <span class="card-price">₹640 / 250g</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- STORY -->
+  <div class="section-alt">
+    <div class="wrap">
+      <section id="story" class="split reveal">
+        <div>
+          <span class="kicker">Story</span>
+          <h2>Built by two roasters and one stubborn thermometer.</h2>
+          <p>We started Kindling in a garage with a 1kg sample roaster, logging every batch by hand because the difference between "good" and "great" coffee is usually a matter of seconds. That habit never left — every bag you get today is roasted from the same logged profile that won it a place in our lineup.</p>
+          <div class="stat-row">
+            <div class="stat"><b>40+</b><span>farms sourced directly</span></div>
+            <div class="stat"><b>12kg</b><span>max batch size</span></div>
+            <div class="stat"><b>7 days</b><span>from roast to your door</span></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="https://images.unsplash.com/photo-1753837787497-84ce94c9bf01?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Close-up texture of roasted coffee beans, representing the roastery's daily batches" loading="lazy">
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div class="wrap">
+    <section id="join" class="reveal">
+      <div class="newsletter">
+        <div>
+          <h2>Get the next roast log before it ships.</h2>
+          <p>One email a week: what we roasted, why, and a discount code for the batch.</p>
+        </div>
+        <form class="signup" id="signupForm" novalidate>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required aria-describedby="formMsg">
+          </div>
+          <button type="submit" class="btn btn-primary">Join the list</button>
+        </form>
+        <p class="form-msg" id="formMsg" role="status"></p>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h3>Kindling Coffee Co.</h3>
+        <p>Small-batch roastery, Greater Lucknow, India.</p>
+      </div>
+      <div>
+        <h3>Shop</h3>
+        <ul>
+          <li><a href="#shop">All roasts</a></li>
+          <li><a href="#craft">Our process</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Contact</h3>
+        <ul>
+          <li><a href="tel:+918933006408">+91 89330 06408</a></li>
+          <li><a href="mailto:hello@kindlingcoffee.tech">hello@kindlingcoffee.tech</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Kindling Coffee Co.</span>
+      <span>Roasted &amp; built with care.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Mobile nav toggle (state management) ---------- */
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('primaryNav');
+  var scrim = document.getElementById('navScrim');
+
+  function closeNav(){
+    nav.classList.remove('open');
+    scrim.classList.remove('show');
+    toggle.setAttribute('aria-expanded','false');
+  }
+  function toggleNav(){
+    var isOpen = nav.classList.toggle('open');
+    scrim.classList.toggle('show', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  }
+  toggle.addEventListener('click', toggleNav);
+  scrim.addEventListener('click', closeNav);
+  nav.addEventListener('click', function(e){
+    if(e.target.tagName === 'A') closeNav();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeNav();
+  });
+
+  /* ---------- Roast level interactivity (signature element) ---------- */
+  var roastData = {
+    light: {
+      color: '#A0D4E0',
+      heights: [30, 42, 26, 48, 33],
+      image: 'https://images.unsplash.com/photo-1589830802010-c2c25d784842?auto=format&fit=crop&w=900&q=80',
+      title: 'Light Roast',
+      copy: 'Bright and complex — the bean\u2019s original character stays intact. Notes of citrus, berries, and floral tea.'
+    },
+    medium: {
+      color: '#7C6C65',
+      heights: [36, 50, 32, 56, 39],
+      image: 'https://images.unsplash.com/photo-1753837787497-84ce94c9bf01?auto=format&fit=crop&w=900&q=80',
+      title: 'Medium Roast',
+      copy: 'Balanced and rounded \u2014 caramelized sugars meet bright acidity. Notes of toasted hazelnut and stone fruit.'
+    },
+    dark: {
+      color: '#2A211C',
+      heights: [42, 58, 38, 64, 45],
+      image: 'https://images.unsplash.com/photo-1698061700649-4c6425ebdbec?auto=format&fit=crop&w=900&q=80',
+      title: 'Dark Roast',
+      copy: 'Bold and weighty \u2014 deep caramelization dominates. Notes of dark chocolate, toasted spice, and molasses.'
+    }
+  };
+
+  var visual = document.getElementById('roastVisual');
+  var roastImage = document.getElementById('roastImage');
+  var desc = document.getElementById('roastDesc');
+  var buttons = document.querySelectorAll('.roast-btn');
+
+  function renderBeans(level){
+    var d = roastData[level];
+    visual.innerHTML = '';
+    d.heights.forEach(function(h){
+      var bean = document.createElement('div');
+      bean.className = 'roast-bean';
+      bean.style.setProperty('--roast-color', d.color);
+      bean.style.height = h + 'px';
+      visual.appendChild(bean);
+    });
+  }
+
+  function setRoast(level){
+    var d = roastData[level];
+    renderBeans(level);
+    roastImage.style.opacity = '0';
+    window.setTimeout(function(){
+      roastImage.src = d.image;
+      roastImage.alt = 'Close-up of ' + d.title.toLowerCase() + ' coffee beans';
+      roastImage.style.opacity = '1';
+    }, 150);
+    desc.innerHTML = '<strong>' + d.title + '</strong>' + d.copy;
+    buttons.forEach(function(btn){
+      btn.setAttribute('aria-pressed', String(btn.dataset.roast === level));
+    });
+  }
+
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){ setRoast(btn.dataset.roast); });
+  });
+
+  setRoast('medium'); // initial state
+
+  /* ---------- Newsletter form validation (interactivity) ---------- */
+  var form = document.getElementById('signupForm');
+  var emailInput = document.getElementById('email');
+  var msg = document.getElementById('formMsg');
+
+  function showMsg(text, ok){
+    msg.textContent = text;
+    msg.className = 'form-msg show ' + (ok ? 'ok' : 'err');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var value = emailInput.value.trim();
+    var valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    if(!valid){
+      showMsg('That email doesn\u2019t look right \u2014 double-check it and try again.', false);
+      emailInput.focus();
+      return;
+    }
+    showMsg('You\u2019re on the list \u2014 look for our next roast log soon.', true);
+    form.reset();
+  });
+
+  /* ---------- Scroll reveal (respects prefers-reduced-motion via CSS) ---------- */
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+})();
+</script>
+
+</body>
+</html>
