@@ -8,7 +8,7 @@ Throughout this program, I will be working on a total of 4 projects, focusing on
 
 | Project | Status | Description |
 | :--- | :--- | :--- |
-| **Project 1: Responsive Mobile Navigation** | ✅ Completed | Designed and resolved display issues for a mobile-responsive navigation bar, ensuring seamless functionality and UI adaptability across smaller screens. |
+| **Project 1: Responsive Mobile Navigation** | ✅ Completed | a responsive coffee roastery landing page built with HTML5, CSS3 (Grid & Flexbox), and vanilla JavaScript, featuring mobile-first responsive design, interactive UI components, and WCAG-conscious accessibility. |
 | **Project 2: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
 | **Project 3: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
 | **Project 4: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
