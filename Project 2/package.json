@@ -1,0 +1,15 @@
+{
+  "name": "decodelabs-project2-backend-api",
+  "version": "1.0.0",
+  "description": "DecodeLabs Industrial Training Kit - Project 2: Backend API Development",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}
