@@ -9,7 +9,7 @@ Throughout this program, I will be working on a total of 4 projects, focusing on
 | Project | Status | Description |
 | :--- | :--- | :--- |
 | **Project 1: Responsive Mobile Navigation** | ✅ Completed | a responsive coffee roastery landing page built with HTML5, CSS3 (Grid & Flexbox), and vanilla JavaScript, featuring mobile-first responsive design, interactive UI components, and WCAG-conscious accessibility. |
-| **Project 2: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
+| **Project 2: Task Manager REST API** | ✅ Completed | Designed and developed a zero-dependency REST API in Node.js for managing tasks, covering GET/POST/PUT/PATCH/DELETE endpoints, request validation, authentication (401/403), rate limiting (429), and proper HTTP status code handling — including a full automated test suite. |
 | **Project 3: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
 | **Project 4: TBA** | ⏳ Pending | *Project details will be added once assigned.* |
 
